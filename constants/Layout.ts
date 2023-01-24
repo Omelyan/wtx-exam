@@ -1,12 +1,13 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Insets } from "react-native";
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+const { width, height } = Dimensions.get("window");
+const templateWidth = 428;
+const scale = width / templateWidth;
+const hitSlop: Insets = { left: 10, right: 10, top: 10, bottom: 10 };
 
 export default {
-  window: {
-    width,
-    height,
-  },
-  isSmallDevice: width < 375,
+  width,
+  height,
+  scale,
+  hitSlop,
 };

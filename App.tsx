@@ -1,22 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+import { LayoutProvider } from "./context";
+import { useCachedResources } from "./hooks";
+import Navigation from "./navigation";
+import { asyncStoragePersister, queryClient } from "./services";
 
 export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+  const isLoading = useCachedResources();
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    );
-  }
+  if (isLoading) return null;
+
+  return (
+    <SafeAreaProvider>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: asyncStoragePersister }}
+      >
+        <LayoutProvider>
+          <Navigation />
+        </LayoutProvider>
+      </PersistQueryClientProvider>
+    </SafeAreaProvider>
+  );
 }
